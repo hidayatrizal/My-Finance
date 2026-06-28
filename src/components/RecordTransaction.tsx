@@ -5,6 +5,7 @@ import { Input } from './Input';
 import { addTransaction } from '../lib/transactions';
 import { ServicePrices } from '../types';
 import { format } from 'date-fns';
+import { motion, AnimatePresence } from 'motion/react';
 
 export function RecordTransaction({ prices, onSuccess }: { prices: ServicePrices, onSuccess: () => void }) {
   const [adultCount, setAdultCount] = useState(0);
@@ -48,59 +49,48 @@ export function RecordTransaction({ prices, onSuccess }: { prices: ServicePrices
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Catat Hari Ini</h2>
-        <p className="text-sm text-slate-500">Masukkan jumlah pelanggan harian</p>
+        <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Catat</h2>
+        <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">Pemasukan harian</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <Card>
-          <CardContent className="space-y-5">
+        <Card className="border-0 shadow-none bg-transparent">
+          <CardContent className="space-y-5 p-0">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Tanggal</label>
+              <label className="text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest block mb-2 pl-1">Tanggal</label>
               <Input 
                 type="date" 
                 value={date} 
                 onChange={(e) => setDate(e.target.value)} 
                 required 
+                className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-white/10"
               />
             </div>
 
             <div>
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Input Transaksi</label>
+              <label className="text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest block mb-3 mt-4 pl-1">Transaksi</label>
               <div className="space-y-3">
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-sm font-bold text-slate-800">Dewasa</span>
-                    <span className="text-xs font-bold text-slate-400">{formatCurrency(prices.adult)} / org</span>
+                <div className="glass-panel p-5 rounded-[1.5rem] flex items-center justify-between">
+                  <div>
+                    <span className="text-base font-black text-slate-800 dark:text-white block">Dewasa</span>
+                    <span className="text-[11px] font-bold text-slate-400 dark:text-zinc-500">{formatCurrency(prices.adult)} / org</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Button type="button" variant="outline" size="sm" className="h-12 w-12 text-lg shrink-0" onClick={() => setAdultCount(Math.max(0, adultCount - 1))}>-</Button>
-                    <Input 
-                      type="number" 
-                      min="0" 
-                      value={adultCount} 
-                      onChange={(e) => setAdultCount(parseInt(e.target.value) || 0)} 
-                      className="text-center text-xl shadow-sm"
-                    />
-                    <Button type="button" variant="outline" size="sm" className="h-12 w-12 text-lg shrink-0" onClick={() => setAdultCount(adultCount + 1)}>+</Button>
+                  <div className="flex items-center gap-4 bg-slate-100 dark:bg-zinc-800/80 p-1.5 rounded-full border border-slate-200 dark:border-white/5">
+                    <motion.button whileTap={{ scale: 0.9 }} type="button" className="w-10 h-10 rounded-full flex items-center justify-center text-xl font-medium text-slate-600 dark:text-zinc-400 hover:bg-slate-200 dark:hover:bg-zinc-700 transition-colors" onClick={() => setAdultCount(Math.max(0, adultCount - 1))}>-</motion.button>
+                    <span className="w-6 text-center text-lg font-black text-slate-800 dark:text-white">{adultCount}</span>
+                    <motion.button whileTap={{ scale: 0.9 }} type="button" className="w-10 h-10 rounded-full bg-white dark:bg-zinc-700 flex items-center justify-center text-xl font-medium shadow-sm text-slate-900 dark:text-white" onClick={() => setAdultCount(adultCount + 1)}>+</motion.button>
                   </div>
                 </div>
 
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-sm font-bold text-slate-800">Anak-anak</span>
-                    <span className="text-xs font-bold text-slate-400">{formatCurrency(prices.child)} / org</span>
+                <div className="glass-panel p-5 rounded-[1.5rem] flex items-center justify-between">
+                  <div>
+                    <span className="text-base font-black text-slate-800 dark:text-white block">Anak-anak</span>
+                    <span className="text-[11px] font-bold text-slate-400 dark:text-zinc-500">{formatCurrency(prices.child)} / org</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Button type="button" variant="outline" size="sm" className="h-12 w-12 text-lg shrink-0" onClick={() => setChildCount(Math.max(0, childCount - 1))}>-</Button>
-                    <Input 
-                      type="number" 
-                      min="0" 
-                      value={childCount} 
-                      onChange={(e) => setChildCount(parseInt(e.target.value) || 0)}
-                      className="text-center text-xl shadow-sm" 
-                    />
-                    <Button type="button" variant="outline" size="sm" className="h-12 w-12 text-lg shrink-0" onClick={() => setChildCount(childCount + 1)}>+</Button>
+                  <div className="flex items-center gap-4 bg-slate-100 dark:bg-zinc-800/80 p-1.5 rounded-full border border-slate-200 dark:border-white/5">
+                    <motion.button whileTap={{ scale: 0.9 }} type="button" className="w-10 h-10 rounded-full flex items-center justify-center text-xl font-medium text-slate-600 dark:text-zinc-400 hover:bg-slate-200 dark:hover:bg-zinc-700 transition-colors" onClick={() => setChildCount(Math.max(0, childCount - 1))}>-</motion.button>
+                    <span className="w-6 text-center text-lg font-black text-slate-800 dark:text-white">{childCount}</span>
+                    <motion.button whileTap={{ scale: 0.9 }} type="button" className="w-10 h-10 rounded-full bg-white dark:bg-zinc-700 flex items-center justify-center text-xl font-medium shadow-sm text-slate-900 dark:text-white" onClick={() => setChildCount(childCount + 1)}>+</motion.button>
                   </div>
                 </div>
               </div>
@@ -108,25 +98,34 @@ export function RecordTransaction({ prices, onSuccess }: { prices: ServicePrices
           </CardContent>
         </Card>
 
-        <div className="bg-indigo-900 p-6 rounded-3xl text-white shadow-xl relative overflow-hidden">
-          <div className="relative z-10">
-            <p className="text-indigo-300 text-xs font-bold uppercase tracking-widest mb-1">Estimasi Hari Ini</p>
-            <h2 className="text-3xl font-bold">{formatCurrency(grandTotal)}</h2>
-            <div className="mt-4 pt-4 border-t border-indigo-800 flex justify-between items-center">
-              <span className="text-xs text-indigo-300 italic">{adultCount + childCount} Pelanggan total</span>
+        <motion.div 
+          key={grandTotal}
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          className="bg-slate-900 dark:bg-black p-8 rounded-[2rem] text-white shadow-xl shadow-slate-900/20 dark:shadow-black/50 relative overflow-hidden border border-slate-800 dark:border-white/10 mt-8"
+        >
+          <div className="absolute top-0 right-0 w-64 h-64 bg-slate-800/50 dark:bg-zinc-800/30 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3"></div>
+          <div className="relative z-10 flex flex-col items-center text-center">
+            <p className="text-slate-400 dark:text-zinc-500 text-[10px] font-black uppercase tracking-widest mb-2">Total Estimasi</p>
+            <h2 className="text-4xl sm:text-5xl font-black tracking-tighter text-white">
+              {formatCurrency(grandTotal)}
+            </h2>
+            <div className="mt-6 pt-5 border-t border-slate-800 dark:border-white/10 w-full flex justify-between items-center">
+              <span className="text-xs text-slate-400 dark:text-zinc-500 font-bold">{adultCount + childCount} Pelanggan</span>
+              <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)] animate-pulse"></div>
             </div>
           </div>
-          <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-indigo-800 rounded-full blur-3xl opacity-50"></div>
-        </div>
+        </motion.div>
 
-        <Button 
+        <motion.button 
+          whileTap={{ scale: (isSubmitting || (adultCount === 0 && childCount === 0)) ? 1 : 0.98 }}
           type="submit" 
-          className="w-full text-xs uppercase tracking-widest" 
-          size="lg"
           disabled={isSubmitting || (adultCount === 0 && childCount === 0)}
+          className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-black py-5 rounded-[1.5rem] tracking-widest uppercase hover:bg-slate-800 dark:hover:bg-zinc-200 transition-all shadow-xl shadow-slate-900/20 dark:shadow-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? 'MENYIMPAN...' : 'SIMPAN TRANSAKSI'}
-        </Button>
+          {isSubmitting ? 'Menyimpan...' : 'Simpan'}
+        </motion.button>
       </form>
     </div>
   );

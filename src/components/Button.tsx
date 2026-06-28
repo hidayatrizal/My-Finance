@@ -9,16 +9,16 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "md", ...props }, ref) => {
     const variants = {
-      primary: "bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:scale-95",
-      secondary: "bg-slate-100 text-slate-900 font-bold hover:bg-slate-200 active:scale-95",
-      outline: "border border-slate-200 bg-white text-slate-700 font-bold hover:bg-slate-50 active:scale-95",
-      danger: "bg-red-50 text-red-600 font-bold hover:bg-red-100 active:scale-95",
-      ghost: "hover:bg-slate-100 text-slate-700 font-bold active:scale-95",
+      primary: "bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-black shadow-xl shadow-indigo-600/20 dark:shadow-indigo-900/30 active:scale-[0.98] border border-white/10",
+      secondary: "bg-slate-100 dark:bg-zinc-800/80 text-slate-900 dark:text-zinc-100 font-bold hover:bg-slate-200 dark:hover:bg-zinc-700 active:scale-[0.98] border border-transparent dark:border-white/5",
+      outline: "border-2 border-slate-200 dark:border-white/10 bg-transparent text-slate-700 dark:text-zinc-300 font-bold hover:bg-slate-50 dark:hover:bg-white/5 active:scale-[0.98]",
+      danger: "bg-red-50 text-red-600 font-bold hover:bg-red-100 active:scale-[0.98]",
+      ghost: "hover:bg-slate-100 dark:hover:bg-white/5 text-slate-700 dark:text-zinc-300 font-bold active:scale-[0.98]",
     };
 
     const sizes = {
-      sm: "h-9 px-4 text-xs",
-      md: "h-12 px-6 text-sm",
+      sm: "h-10 px-4 text-xs",
+      md: "h-14 px-6 text-sm",
       lg: "py-4 px-8 text-base",
     };
 

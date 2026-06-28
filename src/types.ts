@@ -12,6 +12,7 @@ export type Transaction = {
 export type ServicePrices = {
   adult: number;
   child: number;
+  targetIncome?: number;
 };
 
 export type MonthlyReport = {

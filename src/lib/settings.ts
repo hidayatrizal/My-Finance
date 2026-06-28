@@ -13,7 +13,7 @@ export const getPrices = async (): Promise<ServicePrices> => {
     return docSnap.data() as ServicePrices;
   } else {
     // Default prices if not set
-    const defaultPrices: ServicePrices = { adult: 35000, child: 25000 };
+    const defaultPrices: ServicePrices = { adult: 35000, child: 25000, targetIncome: 500000 };
     await setDoc(docRef, defaultPrices);
     return defaultPrices;
   }
