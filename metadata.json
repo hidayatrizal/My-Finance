@@ -1,0 +1,6 @@
+{
+  "name": "My Finance",
+  "description": "Mobile application for Kembarber Heir Studio to record daily haircut transactions, calculate income, and monitor business performance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
