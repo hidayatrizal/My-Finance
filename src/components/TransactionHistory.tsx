@@ -4,14 +4,16 @@ import { getTransactions, deleteTransaction } from '../lib/transactions';
 import { Transaction } from '../types';
 import { format, parseISO } from 'date-fns';
 import { id } from 'date-fns/locale';
-import { Trash2, History, ArrowUpRight } from 'lucide-react';
+import { Trash2, History, ArrowUpRight, Filter, X } from 'lucide-react';
 import { Button } from './Button';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 
 export function TransactionHistory({ refreshTrigger, onDelete }: { refreshTrigger: number, onDelete?: () => void }) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [filterMonth, setFilterMonth] = useState<string>('');
+  const [showFilter, setShowFilter] = useState(false);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -44,6 +46,11 @@ export function TransactionHistory({ refreshTrigger, onDelete }: { refreshTrigge
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(amount);
   };
+
+  const filteredTransactions = transactions.filter(t => {
+    if (!filterMonth) return true;
+    return t.date.startsWith(filterMonth);
+  });
 
   if (isLoading) {
     return <div className="text-center py-10 text-slate-400 dark:text-zinc-500 font-bold text-sm">Memuat riwayat...</div>;
@@ -80,19 +87,64 @@ export function TransactionHistory({ refreshTrigger, onDelete }: { refreshTrigge
   };
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-1 mb-8">
-        <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Riwayat</h2>
-        <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">Daftar transaksi harian Anda</p>
+    <div className="space-y-6 pb-8">
+      <div className="flex items-center justify-between mb-8">
+        <div className="space-y-1">
+          <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Riwayat</h2>
+          <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">Daftar transaksi harian Anda</p>
+        </div>
+        <button 
+          onClick={() => setShowFilter(!showFilter)}
+          className={`w-12 h-12 flex items-center justify-center rounded-2xl transition-all ${showFilter || filterMonth ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400'}`}
+        >
+          {showFilter && filterMonth ? <X className="w-5 h-5" /> : <Filter className="w-5 h-5" />}
+        </button>
       </div>
 
-      <motion.div 
-        variants={container}
+      <AnimatePresence>
+        {showFilter && (
+          <motion.div
+            initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+            animate={{ opacity: 1, height: 'auto', marginBottom: 24 }}
+            exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="bg-slate-50 dark:bg-zinc-900/50 p-4 rounded-2xl border border-slate-100 dark:border-white/5 flex items-center gap-3">
+              <label className="text-xs font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-widest whitespace-nowrap">Filter Bulan</label>
+              <input 
+                type="month" 
+                value={filterMonth}
+                onChange={(e) => setFilterMonth(e.target.value)}
+                className="flex-1 bg-white dark:bg-zinc-800 border-2 border-slate-100 dark:border-white/5 rounded-xl px-4 py-2 text-sm font-bold text-slate-800 dark:text-white outline-none focus:border-emerald-500 dark:focus:border-emerald-500"
+              />
+              {filterMonth && (
+                <button 
+                  onClick={() => {
+                    setFilterMonth('');
+                    setShowFilter(false);
+                  }}
+                  className="text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {filteredTransactions.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-slate-500 dark:text-zinc-400 text-sm font-medium">Tidak ada riwayat untuk bulan ini.</p>
+        </div>
+      ) : (
+        <motion.div 
+          variants={container}
         initial="hidden"
         animate="show"
         className="space-y-3"
       >
-        {transactions.map((t) => (
+        {filteredTransactions.map((t) => (
           <motion.div 
             variants={item}
             key={t.id} 
@@ -143,6 +195,7 @@ export function TransactionHistory({ refreshTrigger, onDelete }: { refreshTrigge
           </motion.div>
         ))}
       </motion.div>
+      )}
     </div>
   );
 }
