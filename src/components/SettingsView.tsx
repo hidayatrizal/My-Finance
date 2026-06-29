@@ -69,7 +69,7 @@ export function Settings({ prices, onPricesChange }: { prices: ServicePrices, on
             </div>
             
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-700 dark:text-zinc-300">Target Harian (Rp)</label>
+              <label className="text-xs font-bold text-slate-700 dark:text-zinc-300">Target Pendapatan (Rp)</label>
               <Input 
                 type="number" 
                 min="0"

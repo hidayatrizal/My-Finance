@@ -20,8 +20,8 @@ export function Home({ refreshTrigger, onNavigate, targetIncome = 500000 }: { re
 
     const fetchData = async () => {
       const data = await getTransactions();
-      let dIncome = 0;
-      let dCustomers = 0;
+      let totalIncome = 0;
+      let totalCustomers = 0;
       let wIncome = 0;
       
       const now = new Date();
@@ -30,10 +30,8 @@ export function Home({ refreshTrigger, onNavigate, targetIncome = 500000 }: { re
       const weekEnd = endOfWeek(now, { weekStartsOn: 1 });
       
       data.forEach(t => {
-        if (t.date === todayStr) {
-          dIncome += t.totalIncome;
-          dCustomers += (t.adultCount + t.childCount);
-        }
+        totalIncome += t.totalIncome;
+        totalCustomers += (t.adultCount + t.childCount);
         
         const [year, month, day] = t.date.split('-').map(Number);
         const tDate = new Date(year, month - 1, day);
@@ -42,8 +40,8 @@ export function Home({ refreshTrigger, onNavigate, targetIncome = 500000 }: { re
         }
       });
       
-      setTodayIncome(dIncome);
-      setTodayCustomers(dCustomers);
+      setTodayIncome(totalIncome);
+      setTodayCustomers(totalCustomers);
       setWeeklyIncome(wIncome);
     };
     fetchData();
@@ -65,7 +63,7 @@ export function Home({ refreshTrigger, onNavigate, targetIncome = 500000 }: { re
           {greeting}.
         </h2>
         <p className="text-slate-500 dark:text-zinc-400 font-medium mt-2 text-sm">
-          Ringkasan aktivitas hari ini
+          Ringkasan seluruh aktivitas
         </p>
       </div>
 
@@ -81,7 +79,7 @@ export function Home({ refreshTrigger, onNavigate, targetIncome = 500000 }: { re
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-4 h-4 text-emerald-400" />
-            <p className="text-slate-400 dark:text-zinc-400 text-[10px] font-black uppercase tracking-widest">Pendapatan Harian</p>
+            <p className="text-slate-400 dark:text-zinc-400 text-[10px] font-black uppercase tracking-widest">Total Pendapatan</p>
           </div>
           <h3 className="text-4xl font-black tracking-tighter mb-1">{formatCurrency(todayIncome)}</h3>
           
