@@ -77,7 +77,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-50 flex flex-col max-w-md mx-auto shadow-2xl relative overflow-hidden transition-colors duration-300">
-      <header className="px-6 pt-10 pb-4 flex items-center justify-between sticky top-0 z-20 bg-gradient-to-b from-slate-50 via-slate-50/95 to-transparent dark:from-zinc-950 dark:via-zinc-950/95 dark:to-transparent">
+      <header className="px-5 pt-10 pb-4 flex items-center justify-between sticky top-0 z-20 bg-gradient-to-b from-slate-50 via-slate-50/95 to-transparent dark:from-zinc-950 dark:via-zinc-950/95 dark:to-transparent">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-slate-900 dark:bg-white rounded-[1rem] flex items-center justify-center text-white dark:text-slate-900 font-black text-lg tracking-tighter shadow-lg shadow-slate-900/20 dark:shadow-white/10">
             K<span className="text-slate-400 dark:text-zinc-400">F</span>
@@ -94,7 +94,7 @@ export default function App() {
         </button>
       </header>
 
-      <main className="flex-1 overflow-y-auto pb-32 pt-2 px-6 relative z-10">
+      <main className="flex-1 overflow-y-auto pb-32 pt-2 px-5 relative z-10">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -129,7 +129,7 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      <nav className="fixed bottom-6 left-6 right-6 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border border-slate-200/50 dark:border-white/10 rounded-full px-2 py-2 flex justify-between items-center z-50 shadow-2xl shadow-slate-200/50 dark:shadow-black/50 ring-1 ring-slate-900/5 dark:ring-white/5">
+      <nav className="fixed bottom-5 left-5 right-5 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border border-slate-200/50 dark:border-white/10 rounded-full px-2 py-2 flex justify-between items-center z-50 shadow-2xl shadow-slate-200/50 dark:shadow-black/50 ring-1 ring-slate-900/5 dark:ring-white/5">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;

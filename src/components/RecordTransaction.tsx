@@ -64,7 +64,7 @@ export function RecordTransaction({ prices, onSuccess }: { prices: ServicePrices
               value={date} 
               onChange={(e) => setDate(e.target.value)} 
               required 
-              className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-white/10 w-full block"
+              className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-white/10 w-full block [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-60 hover:[&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:mr-2"
             />
           </div>
 
