@@ -77,7 +77,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full md:max-w-md mx-auto bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-50 flex flex-col md:shadow-2xl relative overflow-hidden transition-colors duration-300">
-      <header className="px-5 pb-4 flex items-center justify-between sticky top-0 z-20 bg-gradient-to-b from-slate-50 via-slate-50/95 to-transparent dark:from-zinc-950 dark:via-zinc-950/95 dark:to-transparent pt-[calc(env(safe-area-inset-top,0px)+2.5rem)]">
+      <header className="px-5 pb-4 flex items-center justify-between sticky top-0 z-20 bg-gradient-to-b from-slate-50 via-slate-50/95 to-transparent dark:from-zinc-950 dark:via-zinc-950/95 dark:to-transparent pt-[max(env(safe-area-inset-top),1rem)]">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-slate-900 dark:bg-white rounded-[1rem] flex items-center justify-center text-white dark:text-slate-900 font-black text-lg tracking-tighter shadow-lg shadow-slate-900/20 dark:shadow-white/10">
             K<span className="text-slate-400 dark:text-zinc-400">F</span>
