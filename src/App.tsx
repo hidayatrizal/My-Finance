@@ -76,8 +76,8 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-50 flex flex-col max-w-md mx-auto shadow-2xl relative overflow-hidden transition-colors duration-300">
-      <header className="px-5 pt-16 pb-4 flex items-center justify-between sticky top-0 z-20 bg-gradient-to-b from-slate-50 via-slate-50/95 to-transparent dark:from-zinc-950 dark:via-zinc-950/95 dark:to-transparent">
+    <div className="min-h-screen w-full md:max-w-md mx-auto bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-50 flex flex-col md:shadow-2xl relative overflow-hidden transition-colors duration-300">
+      <header className="px-5 pb-4 flex items-center justify-between sticky top-0 z-20 bg-gradient-to-b from-slate-50 via-slate-50/95 to-transparent dark:from-zinc-950 dark:via-zinc-950/95 dark:to-transparent pt-[max(env(safe-area-inset-top),3rem)]">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-slate-900 dark:bg-white rounded-[1rem] flex items-center justify-center text-white dark:text-slate-900 font-black text-lg tracking-tighter shadow-lg shadow-slate-900/20 dark:shadow-white/10">
             K<span className="text-slate-400 dark:text-zinc-400">F</span>
@@ -129,7 +129,8 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      <nav className="fixed bottom-5 left-5 right-5 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border border-slate-200/50 dark:border-white/10 rounded-full px-2 py-2 flex justify-between items-center z-50 shadow-2xl shadow-slate-200/50 dark:shadow-black/50 ring-1 ring-slate-900/5 dark:ring-white/5">
+      <div className="fixed inset-x-0 bottom-0 z-50 flex justify-center pointer-events-none pb-[max(env(safe-area-inset-bottom),1.25rem)]">
+        <nav className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border border-slate-200/50 dark:border-white/10 rounded-full px-2 py-2 flex justify-between items-center shadow-2xl shadow-slate-200/50 dark:shadow-black/50 ring-1 ring-slate-900/5 dark:ring-white/5 pointer-events-auto w-[calc(100%-2.5rem)] md:max-w-[calc(28rem-2.5rem)] mx-auto">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -158,7 +159,8 @@ export default function App() {
             </button>
           );
         })}
-      </nav>
+        </nav>
+      </div>
     </div>
   );
 }
