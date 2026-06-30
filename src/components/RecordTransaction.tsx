@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from './Card';
 import { Button } from './Button';
 import { Input } from './Input';
@@ -12,6 +12,34 @@ export function RecordTransaction({ prices, onSuccess }: { prices: ServicePrices
   const [childCount, setChildCount] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+
+  // Muat draft saat komponen dimuat
+  useEffect(() => {
+    const savedDraft = localStorage.getItem('transaction_draft');
+    if (savedDraft) {
+      try {
+        const { adult, child, draftDate } = JSON.parse(savedDraft);
+        if (adult) setAdultCount(adult);
+        if (child) setChildCount(child);
+        if (draftDate) setDate(draftDate);
+      } catch (e) {
+        console.error('Failed to parse draft', e);
+      }
+    }
+  }, []);
+
+  // Simpan draft setiap ada perubahan nilai
+  useEffect(() => {
+    if (adultCount > 0 || childCount > 0) {
+      localStorage.setItem('transaction_draft', JSON.stringify({
+        adult: adultCount,
+        child: childCount,
+        draftDate: date
+      }));
+    } else {
+      // Hapus draft jika kosong (0 dan 0) tapi abaikan date agar aman
+    }
+  }, [adultCount, childCount, date]);
 
   const adultTotal = adultCount * prices.adult;
   const childTotal = childCount * prices.child;
@@ -35,6 +63,7 @@ export function RecordTransaction({ prices, onSuccess }: { prices: ServicePrices
       onSuccess();
       setAdultCount(0);
       setChildCount(0);
+      localStorage.removeItem('transaction_draft');
     } catch (error) {
       console.error("Failed to save transaction", error);
     } finally {
