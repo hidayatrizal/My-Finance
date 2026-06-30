@@ -48,6 +48,7 @@ export function setupNotificationScheduler() {
 
     const now = new Date();
     const hours = now.getHours();
+    const minutes = now.getMinutes();
     const dateKey = now.toISOString().split('T')[0];
 
     // Cek apakah notifikasi pagi sudah dikirim hari ini
@@ -58,6 +59,17 @@ export function setupNotificationScheduler() {
           body: 'Yukk kejar target mu hari ini.',
         });
         localStorage.setItem(morningKey, 'true');
+      }
+    }
+
+    // Cek notifikasi siang (12:15 ke atas, batas sampai jam 15)
+    if ((hours === 12 && minutes >= 15) || (hours > 12 && hours < 15)) {
+      const noonKey = `notif_noon_${dateKey}`;
+      if (!localStorage.getItem(noonKey)) {
+        sendLocalNotification('Istirahat Dulu 🍽️', {
+          body: 'Jangan lupa sholat & makan siang Bosss',
+        });
+        localStorage.setItem(noonKey, 'true');
       }
     }
 
