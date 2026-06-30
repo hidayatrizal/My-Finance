@@ -25,8 +25,14 @@ export default function App() {
   const [prices, setPrices] = useState<ServicePrices>({ adult: 35000, child: 25000 });
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
+    // Timer untuk Splash Screen
+    const splashTimer = setTimeout(() => {
+      setShowSplash(false);
+    }, 2000);
+
     // Setup Notifikasi
     const cleanupNotifications = setupNotificationScheduler();
 
@@ -48,7 +54,10 @@ export default function App() {
     };
     fetchPrices();
 
-    return cleanupNotifications;
+    return () => {
+      clearTimeout(splashTimer);
+      cleanupNotifications();
+    };
   }, []);
 
   const triggerRefresh = () => setRefreshTrigger(prev => prev + 1);
@@ -83,6 +92,36 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full md:max-w-md mx-auto bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-50 flex flex-col md:shadow-2xl relative overflow-hidden transition-colors duration-300">
+      <AnimatePresence>
+        {showSplash && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 1.05 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0 z-[100] bg-slate-50 dark:bg-zinc-950 flex flex-col items-center justify-center"
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="flex flex-col items-center gap-5"
+            >
+              <div className="w-24 h-24 bg-slate-900 dark:bg-white rounded-[2rem] flex items-center justify-center text-white dark:text-slate-900 font-black text-4xl tracking-tighter shadow-2xl shadow-slate-900/20 dark:shadow-white/10">
+                K<span className="text-slate-400 dark:text-zinc-400">F</span>
+              </div>
+              <div className="text-center">
+                <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-none mb-1.5">
+                  Kembarber
+                </h1>
+                <p className="text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest">
+                  Finance
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <header className="px-5 pb-4 flex items-center justify-between sticky top-0 z-20 bg-gradient-to-b from-slate-50 via-slate-50/95 to-transparent dark:from-zinc-950 dark:via-zinc-950/95 dark:to-transparent pt-[max(env(safe-area-inset-top),1rem)]">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-slate-900 dark:bg-white rounded-[1rem] flex items-center justify-center text-white dark:text-slate-900 font-black text-lg tracking-tighter shadow-lg shadow-slate-900/20 dark:shadow-white/10">
