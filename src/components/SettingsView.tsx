@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from './Card';
 import { Button } from './Button';
 import { Input } from './Input';
 import { updatePrices } from '../lib/settings';
 import { ServicePrices } from '../types';
+import { requestNotificationPermission, sendLocalNotification } from '../lib/notifications';
+import { Bell, BellOff } from 'lucide-react';
 
 export function Settings({ prices, onPricesChange }: { prices: ServicePrices, onPricesChange: (p: ServicePrices) => void }) {
   const [adultPrice, setAdultPrice] = useState(prices.adult.toString());
@@ -11,6 +13,29 @@ export function Settings({ prices, onPricesChange }: { prices: ServicePrices, on
   const [targetIncome, setTargetIncome] = useState((prices.targetIncome || 500000).toString());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+
+  useEffect(() => {
+    setNotificationsEnabled(localStorage.getItem('notifications_enabled') === 'true');
+  }, []);
+
+  const toggleNotifications = async () => {
+    if (!notificationsEnabled) {
+      const granted = await requestNotificationPermission();
+      if (granted) {
+        localStorage.setItem('notifications_enabled', 'true');
+        setNotificationsEnabled(true);
+        sendLocalNotification('Notifikasi Diaktifkan!', {
+          body: 'Anda akan menerima pengingat harian.'
+        });
+      } else {
+        alert('Izin notifikasi ditolak oleh browser/sistem.');
+      }
+    } else {
+      localStorage.setItem('notifications_enabled', 'false');
+      setNotificationsEnabled(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,11 +61,35 @@ export function Settings({ prices, onPricesChange }: { prices: ServicePrices, on
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-24">
       <div className="space-y-1 mb-8">
         <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Pengaturan</h2>
-        <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">Kelola harga layanan</p>
+        <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">Kelola preferensi dan harga</p>
       </div>
+
+      <Card className="p-1 mb-6">
+        <h3 className="text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest mb-4 px-6 pt-6">Preferensi Aplikasi</h3>
+        <CardContent className="pt-0">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${notificationsEnabled ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400' : 'bg-slate-100 text-slate-400 dark:bg-zinc-800 dark:text-zinc-500'}`}>
+                {notificationsEnabled ? <Bell className="w-5 h-5" /> : <BellOff className="w-5 h-5" />}
+              </div>
+              <div>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">Pengingat Harian</p>
+                <p className="text-xs text-slate-500 dark:text-zinc-400">Notif pagi, malam & istirahat</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={toggleNotifications}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${notificationsEnabled ? 'bg-indigo-500' : 'bg-slate-300 dark:bg-zinc-700'}`}
+            >
+              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${notificationsEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+            </button>
+          </div>
+        </CardContent>
+      </Card>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card className="p-1">

@@ -18,6 +18,7 @@ import { Settings as SettingsView } from './components/SettingsView';
 import { getPrices } from './lib/settings';
 import { ServicePrices } from './types';
 import { AnimatePresence, motion } from 'motion/react';
+import { setupNotificationScheduler } from './lib/notifications';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'home' | 'record' | 'history' | 'reports' | 'settings'>('home');
@@ -26,6 +27,9 @@ export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
 
   useEffect(() => {
+    // Setup Notifikasi
+    const cleanupNotifications = setupNotificationScheduler();
+
     const savedMode = localStorage.getItem('theme');
     if (savedMode === 'light') {
       setIsDarkMode(false);
@@ -43,6 +47,8 @@ export default function App() {
       }
     };
     fetchPrices();
+
+    return cleanupNotifications;
   }, []);
 
   const triggerRefresh = () => setRefreshTrigger(prev => prev + 1);
