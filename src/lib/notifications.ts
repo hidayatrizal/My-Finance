@@ -16,7 +16,6 @@ export async function sendLocalNotification(title: string, options?: Notificatio
   if (!('Notification' in window)) return;
   if (Notification.permission !== 'granted') return;
 
-  // Coba gunakan service worker jika tersedia agar lebih native di mobile
   if ('serviceWorker' in navigator) {
     try {
       const registration = await navigator.serviceWorker.ready;
@@ -33,14 +32,62 @@ export async function sendLocalNotification(title: string, options?: Notificatio
     }
   }
 
-  // Fallback ke Notification biasa
   new Notification(title, {
     icon: '/icon.svg',
     ...options,
   });
 }
 
-// Fungsi untuk menjadwalkan pengecekan notifikasi
+// Menjadwalkan notifikasi menggunakan Notification Triggers API (jika didukung)
+// API ini memungkinkan notifikasi muncul bahkan saat aplikasi ditutup di Android
+export async function scheduleBackgroundNotifications() {
+  if (!('serviceWorker' in navigator)) return false;
+  if (Notification.permission !== 'granted') return false;
+
+  try {
+    const registration = await navigator.serviceWorker.ready;
+    
+    // Cek dukungan Notification Triggers API
+    // @ts-ignore
+    if ('showTrigger' in Notification.prototype) {
+      
+      const scheduleForTime = async (tag: string, title: string, body: string, hour: number, minute: number) => {
+        const now = new Date();
+        const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0);
+        
+        // Jika waktu hari ini sudah lewat, jadwalkan untuk besok
+        if (target.getTime() <= now.getTime()) {
+          target.setDate(target.getDate() + 1);
+        }
+        
+        // @ts-ignore
+        const trigger = new TimestampTrigger(target.getTime());
+        
+        await registration.showNotification(title, {
+          body,
+          icon: '/icon.svg',
+          badge: '/icon.svg',
+          tag: tag, // Tag berguna agar notifikasi tidak menumpuk
+          // @ts-ignore
+          showTrigger: trigger
+        });
+      };
+
+      await scheduleForTime('morning_notif', 'Selamat Pagi! ☀️', 'Yukk kejar target mu hari ini.', 8, 0);
+      await scheduleForTime('noon_notif', 'Istirahat Dulu 🍽️', 'Jangan lupa sholat & makan siang Bosss', 12, 15);
+      await scheduleForTime('evening_notif', 'Sudah Rekap Keuangan? 📊', 'Jangan lupa untuk rekap keuangan mu hari ini.', 20, 0);
+      await scheduleForTime('night_notif', 'Waktunya Istirahat 🌙', 'Jangan lupa istirahat yaa, sayangi dirimu.', 22, 0);
+      
+      return true; // Berhasil dijadwalkan di background
+    }
+    return false; // Tidak didukung
+  } catch (error) {
+    console.error('Error scheduling background notifications', error);
+    return false;
+  }
+}
+
+// Fungsi fallback untuk menjadwalkan pengecekan saat aplikasi terbuka
 export function setupNotificationScheduler() {
   const checkAndNotify = () => {
     const isEnabled = localStorage.getItem('notifications_enabled') === 'true';
@@ -51,7 +98,6 @@ export function setupNotificationScheduler() {
     const minutes = now.getMinutes();
     const dateKey = now.toISOString().split('T')[0];
 
-    // Cek apakah notifikasi pagi sudah dikirim hari ini
     if (hours >= 8 && hours < 12) {
       const morningKey = `notif_morning_${dateKey}`;
       if (!localStorage.getItem(morningKey)) {
@@ -62,7 +108,6 @@ export function setupNotificationScheduler() {
       }
     }
 
-    // Cek notifikasi siang (12:15 ke atas, batas sampai jam 15)
     if ((hours === 12 && minutes >= 15) || (hours > 12 && hours < 15)) {
       const noonKey = `notif_noon_${dateKey}`;
       if (!localStorage.getItem(noonKey)) {
@@ -73,7 +118,6 @@ export function setupNotificationScheduler() {
       }
     }
 
-    // Cek notifikasi malam (rekap)
     if (hours >= 20 && hours < 22) {
       const eveningKey = `notif_evening_${dateKey}`;
       if (!localStorage.getItem(eveningKey)) {
@@ -84,7 +128,6 @@ export function setupNotificationScheduler() {
       }
     }
 
-    // Cek notifikasi istirahat
     if (hours >= 22 || hours < 4) {
       const nightKey = `notif_night_${dateKey}`;
       if (!localStorage.getItem(nightKey)) {
@@ -96,7 +139,12 @@ export function setupNotificationScheduler() {
     }
   };
 
-  // Cek setiap menit
+  // Jalankan jadwal background sekali setiap kali scheduler dipanggil 
+  // (untuk refresh trigger jadwal besoknya jika didukung)
+  if (localStorage.getItem('notifications_enabled') === 'true') {
+    scheduleBackgroundNotifications();
+  }
+
   checkAndNotify();
   const intervalId = setInterval(checkAndNotify, 60000);
   return () => clearInterval(intervalId);

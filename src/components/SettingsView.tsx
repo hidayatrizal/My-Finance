@@ -4,7 +4,7 @@ import { Button } from './Button';
 import { Input } from './Input';
 import { updatePrices } from '../lib/settings';
 import { ServicePrices } from '../types';
-import { requestNotificationPermission, sendLocalNotification } from '../lib/notifications';
+import { requestNotificationPermission, sendLocalNotification, scheduleBackgroundNotifications } from '../lib/notifications';
 import { Bell, BellOff } from 'lucide-react';
 
 export function Settings({ prices, onPricesChange }: { prices: ServicePrices, onPricesChange: (p: ServicePrices) => void }) {
@@ -28,6 +28,9 @@ export function Settings({ prices, onPricesChange }: { prices: ServicePrices, on
         sendLocalNotification('Notifikasi Diaktifkan!', {
           body: 'Anda akan menerima pengingat harian.'
         });
+        
+        // Coba jadwalkan untuk background (jika didukung OS)
+        scheduleBackgroundNotifications();
       } else {
         alert('Izin notifikasi ditolak oleh browser/sistem.');
       }
